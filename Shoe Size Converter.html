@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoe Size Converter</title>
+  <style>
+    /* General styles */
+    #shoe_converter .calculator-box__main {
+      background: #fff;
+      box-shadow: 0 3px 6px rgba(0,0,0,.3);
+      width: 100%;
+      border-radius: 0.6em;
+      padding: 2em;
+      box-sizing: border-box;
+      color: #000;
+    }
+
+    #shoe_converter .calculator-box {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    #shoe_converter .calculator-operation {
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      flex-direction: row;
+    }
+
+    #shoe_converter .calculator-operation__left,
+    #shoe_converter .calculator-operation__right {
+      display: flex;
+      align-items: stretch;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-content: center;
+      flex-wrap: nowrap;
+    }
+
+    #shoe_converter .app-font.calculator-text.calculator-text--large {
+      font-size: 1.3em;
+      padding: 0 0.3em;
+      margin: 0;
+    }
+
+    #shoe_converter .calculator-input {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      flex: 0 0 calc(50.33% - 10px); /* 50.33% width for each input field on larger screens */
+    }
+
+    #shoe_converter .calculator-box__main input,
+    #shoe_converter .calculator-box__main select {
+      text-align: right;
+      background: #efeff5;
+      border: 0;
+      outline: 0;
+      border-radius: 0.4em;
+      font-size: 0.8em;
+      font-weight: 300;
+      width: 100%;
+      margin-right: 1em;
+      -moz-appearance: textfield;
+    }
+
+    #shoe_converter .calculator-operation__right {
+      text-align: end !important;
+    }
+
+    #shoe_converter .calculator-button {
+      padding: 10px 20px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .right-side-data {
+      margin-top: -2.6em;
+    }
+
+    #shoe_converter .calculator-button:hover {
+      background-color: #EFEFF5;
+      color: #000000;
+    }
+
+    .calculator-button:focus {
+      outline: none;
+      background-color: #000000;
+      color: #FFFFFF;
+    }
+    
+    @media (max-width: 767px) {
+      #shoe_converter .calculator-box__main {
+        padding: 1em;
+      }
+      
+      #shoe_converter .app-font.calculator-text.calculator-text--large {
+        font-size: 1.1em;
+      }
+
+      #shoe_converter .calculator-box__main input,
+      #shoe_converter .calculator-box__main select {
+        font-size: 0.9em;
+        margin-bottom: 1em;
+      }
+
+      #shoe_converter .calculator-button {
+        font-size: 14px;
+      }
+      
+      .right-side-data {
+        margin-top: 1.5em;
+      }
+    }
+    
+    @media (max-width: 393px) {
+      #shoe_converter .calculator-box__main {
+        padding: 1em;
+      }
+
+      #shoe_converter .app-font.calculator-text.calculator-text--large {
+        font-size: 1.1em;
+      }
+
+      #shoe_converter .calculator-box__main input,
+      #shoe_converter .calculator-box__main select {
+        font-size: 0.9em;
+      }
+
+      #shoe_converter .calculator-button {
+        font-size: 14px;
+      }
+      
+      .right-side-data {
+        margin-top: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-box" id="shoe_converter">
+    <div class="calculator-box__main">
+      <div class="calculator-operation">
+        <div class="calculator-operation__left">
+          <div slot="left">
+            <div class="app-font calculator-text calculator-text--large">Enter shoe size and select units:</div>
+          </div>
+          <div class="calculator-input">
+            <input class="input-size" placeholder="Size" type="number" value="">
+            <select class="input-unit-from">
+              <option value="US">US</option>
+              <option value="UK">UK</option>
+              <option value="EU">EU</option>
+              <option value="CM">CM</option>
+            </select>
+            <div class="app-font calculator-text calculator-text--large">To</div>
+            <select class="input-unit-to">
+              <option value="US">US</option>
+              <option value="UK">UK</option>
+              <option value="EU">EU</option>
+              <option value="CM">CM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="calculator-operation__right">
+        <div class="right-side-data" slot="right">
+          <button class="calculator-button calculator-button-success" onclick="convertShoeSize()">Convert</button>
+          <div>
+            <div class="app-font calculator-text calculator-text--small">(result)</div>
+          </div>
+          <div>
+            <div class="app-font calculator-text calculator-text--large">=</div>
+            <div class="calculator-input">
+              <input class="input-result" placeholder="Result" type="number" value="" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function convertShoeSize() {
+      const size = parseFloat(document.querySelector('.input-size').value);
+      const fromUnit = document.querySelector('.input-unit-from').value;
+      const toUnit = document.querySelector('.input-unit-to').value;
+      
+      const conversionTable = {
+        US: { US: 1, UK: 0.9, EU: 1.27, CM: 1.27 },
+        UK: { US: 1.1, UK: 1, EU: 1.42, CM: 1.42 },
+        EU: { US: 0.79, UK: 0.7, EU: 1, CM: 1 },
+        CM: { US: 0.79, UK: 0.7, EU: 1, CM: 1 }
+      };
+
+      const result = size * conversionTable[fromUnit][toUnit];
+      document.querySelector('.input-result').value = result;
+    }
+  </script>
+</body>
+</html>
